@@ -172,3 +172,108 @@ Resources:
         Properties:
             RouteTableId: !Ref PublicRouteTable
             SubnetId: !Ref PublicSubnetAZ2
+
+    #Private
+
+    PrivateRouteTableAZ1:
+        Type: AWS::EC2::RouteTable
+        Properties:
+            VpcId: !Ref VPC
+            Tags:
+                - Key: Name
+                  Value: !Sub ${EnvironmentName}-PrivateRouteTableAZ1
+
+    DefaultPrivateRouteTable1:
+        Type: AWS::EC2::Route
+        Properties:
+            RouteTableId: !Ref PrivateRouteTableAZ1
+            DestinationCidrBlock: 0.0.0.0/0
+            NatGatewayId: !Ref NatGateway1
+    
+    PrivateSubnet1RouteTableAssociation:
+        Type: AWS::EC2::SubnetRouteTableAssociation
+        Properties:
+            RouteTableId: !Ref PrivateRouteTableAZ1
+            SubnetId: !Ref PrivateSubnetAZ1
+
+    PrivateRouteTableAZ2:
+        Type: AWS::EC2::RouteTable
+        Properties:
+            VpcId: !Ref VPC
+            Tags:
+                - Key: Name
+                  Value: !Sub ${EnvironmentName}-PrivateRouteTableAZ2
+    
+    DefaultPrivateRouteTable2:
+        Type: AWS::EC2::Route
+        Properties:
+            RouteTableId: !Ref PrivateRouteTableAZ2
+            DestinationCidrBlock: 0.0.0.0/0
+            NatGatewayId: !Ref NatGateway2
+    
+    PrivateSubnet2RouteTableAssociation:
+        Type: AWS::EC2::SubnetRouteTableAssociation
+        Properties:
+            RouteTableId: !Ref PrivateRouteTableAZ2
+            SubnetId: !Ref PrivateSubnetAZ2
+
+Outputs:
+    VPC:
+        Description: VPC created for project2
+        Value: !Ref VPC
+        Export:
+            Name: !Sub ${EnvironmentName}-VPCID
+
+    PublicRouteTable:
+        Description: Public Route Table project2
+        Value: !Ref PublicRouteTable
+        Export:
+            Name: !Sub ${EnvironmentName}-PUB-RT
+
+    PrivateRouteTableAZ1:
+        Description: Private Route Table project2 AZ1
+        Value: !Ref PrivateRouteTableAZ1
+        Export:
+            Name: !Sub ${EnvironmentName}-PRI1-RT
+
+    PrivateRouteTableAZ2:
+        Description: Private Route Table project2 AZ2
+        Value: !Ref PrivateRouteTableAZ2
+        Export:
+            Name: !Sub ${EnvironmentName}-PRI2-RT
+
+    PublicSubnets:
+        Description: The list of the public subnets created for project2
+        Value: !Join [ ",", [ !Ref PublicSubnetAZ1, !Ref PublicSubnetAZ2 ]]
+        Export:
+          Name: !Sub ${EnvironmentName}-PUB-NETS
+
+    PrivateSubnets:
+        Description: The list of the private subnets created for project2
+        Value: !Join [ ",", [ !Ref PrivateSubnetAZ1, !Ref -PrivateSubnetAZ2 ]]
+        Export:
+          Name: !Sub ${EnvironmentName}-PRIV-NETS
+
+    PublicSubnetAZ1:
+        Description: Reference to the public subnet for project2 in AZ1
+        Value: !Ref PublicSubnetAZ1
+        Export:
+          Name: !Sub ${EnvironmentName}-PUB1-SN
+
+    PublicSubnet2: 
+        Description: Reference to the public subnet for project2 in AZ2
+        Value: !Ref PublicSubnetAZ2
+        Export:
+          Name: !Sub ${EnvironmentName}-PUB2-SN
+
+    PrivateSubnet1:
+        Description: Reference to the public subnet for project2 in AZ1
+        Value: !Ref PrivateSubnetAZ1
+        Export:
+          Name: !Sub ${EnvironmentName}-PRI1-SN
+
+    PrivateSubnet2: 
+        Description: Reference to the public subnet for project2 in AZ2
+        Value: !Ref PrivateSubnetAZ2
+        Export:
+          Name: !Sub ${EnvironmentName}-PRI2-SN
