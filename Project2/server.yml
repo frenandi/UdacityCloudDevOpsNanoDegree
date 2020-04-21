@@ -1,0 +1,32 @@
+Description: >
+    This stack contains the information for all the networks configuration used in project2 udacityclouddevops nanodegree
+
+Parameters:
+    
+    EnvironmentName:
+        Description: Name of the environment for project2
+        Type: String
+
+Resources:
+
+  LoadBalancerSecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: Enables http to the load balancer
+      SecurityGroupEgress:
+        - IpProtocol: tcp
+          FromPort: 80
+          ToPort: 80
+          CidrIp: 0.0.0.0/0
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPoort: 80
+          ToPort: 80
+          CidrIp: 0.0.0.0/0
+      Tags:
+          - Key: name
+            Value: SecurityGroup Project2
+      VpcId: 
+        Fn::ImportValue:
+            !Sub "${EnvironmentName}-VPCID"
+  

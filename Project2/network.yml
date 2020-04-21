@@ -1,3 +1,6 @@
+Description: >
+    This stack contains the information for all the networks configuration used in project2 udacityclouddevops nanodegree
+
 Parameters:
     
     EnvironmentName:
