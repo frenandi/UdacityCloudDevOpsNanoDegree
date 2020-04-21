@@ -12,19 +12,29 @@ Parameters:
     PublicSubnetAZ1CIDR:
         Description: The range of IPs for the public subnet in the first availability zone
         Type: String
-        Default: 10.0.0.0/24
+        Default: 10.0.1.0/24
 
     PublicSubnetAZ2CIDR:
         Description: The range of Ips for the public subnet in the second availability zone
         Type: String
-        Default: 10.0.0.0/24
+        Default: 10.0.2.0/24
+
+    PrivateSubnetAZ1CIDR:
+        Description: The range of IPs for the public subnet in the first availability zone
+        Type: String
+        Default: 10.0.4.0/24
+
+    PrivateSubnetAZ2CIDR:
+        Description: The range of Ips for the public subnet in the second availability zone
+        Type: String
+        Default: 10.0.5.0/24
 
 Resources:
     
     VPC:
         Type: AWS::EC2::VPC
         Properties:
-            CidrBlock: !REF VpcCIDR
+            CidrBlock: !Ref VpcCIDR
             EnableDnsHostnames: true
             Tags:
                 - Key: Name
@@ -51,3 +61,26 @@ Resources:
             Tags:
                 - Key: Name
                   Value: !Sub ${EnvironmentName}-PublicSubnetAZ2
+
+
+    PrivateSubnetAZ1:
+        Type: AWS::EC2::Subnet
+        Properties:
+            AvailabilityZone: !Select [ 0, !GetAZs '' ]
+            CidrBlock: !Ref PrivateSubnetAZ1CIDR
+            MapPublicIpOnLaunch: false
+            VpcId: !Ref VPC
+            Tags:
+                - Key: Name
+                  Value: !Sub ${EnvironmentName}-PrivateSubnetAZ1
+            
+    PrivateSubnetAZ2:
+        Type: AWS::EC2::Subnet
+        Properties:
+            AvailabilityZone: !Select [ 1, !GetAZs '' ]
+            CidrBlock: !Ref PrivateSubnetAZ2CIDR
+            MapPublicIpOnLaunch: false
+            VpcId: !Ref VPC
+            Tags:
+                - Key: Name
+                  Value: !Sub ${EnvironmentName}-PrivateSubnetAZ2
