@@ -55,4 +55,38 @@ Resources:
       VpcId: 
         Fn::ImportValue:
             !Sub "${EnvironmentName}-VPCID"
-  
+
+  EC2Role:
+      Type: AWS::IAM::Role
+      Properties:
+        AssumeRolePolicyDocument:
+          Version: "2012-10-17"
+          Statement:
+            - Effect: "Allow"
+              Principal:
+                Service:
+                  - "ec2.amazonaws.com"
+              Action:
+                - "sts:AssumeRole"  
+        Path: "/"
+        RoleName: EC2Role    
+    
+    EC2Policy:
+      Type: AWS::IAM::Policy
+      Properties:
+        PolicyName: EC2Policy
+        PolicyDocument:
+          Version: "2012-10-17"
+          Statement:
+            - Effect: "Allow"
+              Action: "*"
+              Resource: "*" 
+        Roles:
+          - Ref: EC2Role
+
+    ProfileWithRolesForOurApp:
+      Type: AWS::IAM::InstanceProfile
+      Properties: 
+        Roles:
+          - EC2Role
+    
