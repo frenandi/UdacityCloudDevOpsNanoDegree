@@ -1,0 +1,53 @@
+Parameters:
+    
+    EnvironmentName:
+        Description: Name of the environment for project2
+        Type: String
+        
+    VpcCIDR:
+        Description: The range of Ips supported by the Vpc
+        Type: String
+        Default: 10.0.0.0/16
+
+    PublicSubnetAZ1CIDR:
+        Description: The range of IPs for the public subnet in the first availability zone
+        Type: String
+        Default: 10.0.0.0/24
+
+    PublicSubnetAZ2CIDR:
+        Description: The range of Ips for the public subnet in the second availability zone
+        Type: String
+        Default: 10.0.0.0/24
+
+Resources:
+    
+    VPC:
+        Type: AWS::EC2::VPC
+        Properties:
+            CidrBlock: !REF VpcCIDR
+            EnableDnsHostnames: true
+            Tags:
+                - Key: Name
+                  Value: !Sub ${EnvironmentName}-VPC
+    
+    PublicSubnetAZ1:
+        Type: AWS::EC2::Subnet
+        Properties:
+            AvailabilityZone: !Select [ 0, !GetAZs '' ]
+            CidrBlock: !Ref PublicSubnetAZ1CIDR
+            MapPublicIpOnLaunch: false
+            VpcId: !Ref VPC
+            Tags:
+                - Key: Name
+                  Value: !Sub ${EnvironmentName}-PublicSubnetAZ1
+            
+    PublicSubnetAZ2:
+        Type: AWS::EC2::Subnet
+        Properties:
+            AvailabilityZone: !Select [ 1, !GetAZs '' ]
+            CidrBlock: !Ref PublicSubnetAZ2CIDR
+            MapPublicIpOnLaunch: false
+            VpcId: !Ref VPC
+            Tags:
+                - Key: Name
+                  Value: !Sub ${EnvironmentName}-PublicSubnetAZ2
