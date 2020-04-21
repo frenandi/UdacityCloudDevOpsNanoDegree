@@ -31,6 +31,8 @@ Parameters:
 
 Resources:
     
+    #VPC 
+
     VPC:
         Type: AWS::EC2::VPC
         Properties:
@@ -40,6 +42,8 @@ Resources:
                 - Key: Name
                   Value: !Sub ${EnvironmentName}-VPC
     
+    #Subnets
+
     PublicSubnetAZ1:
         Type: AWS::EC2::Subnet
         Properties:
@@ -84,6 +88,8 @@ Resources:
                 - Key: Name
                   Value: !Sub ${EnvironmentName}-PrivateSubnetAZ2
     
+    #InternetGateways
+
     InternetGateway:
         Type: AWS::EC2::InternetGateway
         Properties:
@@ -96,6 +102,8 @@ Resources:
         Properties:
             InternetGatewayId: !Ref InternetGateway
             VpcId: !Ref VPC     
+
+    #NatGateways
 
     NatGateway1ElasticIp:
         Type: AWS::EC2::EIP
@@ -119,16 +127,48 @@ Resources:
         Type: AWS::EC2::NatGateway
         Properties:
             AllocationId: !GetAtt NatGateway1ElasticIp.AllocationId
-            SubnetId: PublicSubnetAZ1
+            SubnetId: !Ref PublicSubnetAZ1
             Tags:
                 - Key: Name
                   Value: !Sub ${EnvironmentName}-NatGateway1
     
-     NatGateway2:
+    NatGateway2:
         Type: AWS::EC2::NatGateway
         Properties:
             AllocationId: !GetAtt NatGateway2ElasticIp.AllocationId
-            SubnetId: -PublicSubnetAZ2
+            SubnetId: !Ref PublicSubnetAZ2
             Tags:
                 - Key: Name
-                  Value: !Sub ${EnvironmentName}-NatGateway2      
+                  Value: !Sub ${EnvironmentName}-NatGateway2    
+
+    #RouteTables
+
+    #Public
+    PublicRouteTable:
+        Type: AWS::EC2::RouteTable
+        Properties:
+            VpcId: !Ref VPC
+            Tags:
+                - Key: Name
+                  Value: !Sub ${EnvironmentName}-PublicRouteTable    
+            
+    
+    DefaultPublicRoute:
+        Type: AWS::EC2::Route
+        DependsOn: InternetGatewayAttachment
+        Properties:
+            RouteTableId: !Ref PublicRouteTable
+            DestinationCidrBlock: 0.0.0.0/0
+            GatewayId: !Ref InternetGateway
+    
+    PublicSubnetAZ1RouteTableAssociation:
+        Type: AWS::EC2::SubnetRouteTableAssociation
+        Properties:
+            RouteTableId: !Ref PublicRouteTable
+            SubnetId: !Ref PublicSubnetAZ1
+    
+    PublicSubnetAZ2RouteTableAssociation:
+        Type: AWS::EC2::SubnetRouteTableAssociation
+        Properties:
+            RouteTableId: !Ref PublicRouteTable
+            SubnetId: !Ref PublicSubnetAZ2
