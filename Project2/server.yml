@@ -20,7 +20,7 @@ Resources:
           CidrIp: 0.0.0.0/0
       SecurityGroupIngress:
         - IpProtocol: tcp
-          FromPoort: 80
+          FromPort: 80
           ToPort: 80
           CidrIp: 0.0.0.0/0
       Tags:
@@ -40,15 +40,15 @@ Resources:
             FromPort: 0
             ToPort: 65535
             CidrIp: 0.0.0.0/0
-        SecurityGroupIngress:
-          - IpProtocol: tcp
-            FromPort: 80
-            ToPort: 80
-            CidrIp: 0.0.0.0/0
-          - IpProtocol: tcp
-            FromPort: 22
-            ToPort: 22
-            CidrIp: 0.0.0.0/0
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: 80
+          ToPort: 80
+          CidrIp: 0.0.0.0/0
+        - IpProtocol: tcp
+          FromPort: 22
+          ToPort: 22
+          CidrIp: 0.0.0.0/0
       Tags:
           - Key: Name
             Value: Webservers SecurityGroup Project2
@@ -57,21 +57,21 @@ Resources:
             !Sub "${EnvironmentName}-VPCID"
 
   EC2Role:
-      Type: AWS::IAM::Role
-      Properties:
-        AssumeRolePolicyDocument:
-          Version: "2012-10-17"
-          Statement:
-            - Effect: "Allow"
-              Principal:
-                Service:
-                  - "ec2.amazonaws.com"
-              Action:
-                - "sts:AssumeRole"  
-        Path: "/"
-        RoleName: EC2Role    
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: "Allow"
+            Principal:
+              Service:
+                - "ec2.amazonaws.com"
+            Action:
+              - "sts:AssumeRole"  
+      Path: "/"
+      RoleName: EC2Role    
     
-  EC2Policy:
+  Policy:
     Type: AWS::IAM::Policy
     Properties:
       PolicyName: EC2Policy
@@ -119,7 +119,7 @@ Resources:
         HealthCheckIntervalSeconds: 25
         HealthCheckPath: /
         HealthCheckProtocol: HTTP
-        HealthCheckTimeoutSeconds: 30
+        HealthCheckTimeoutSeconds: 15
         HealthyThresholdCount: 3
         Port: 80
         Protocol: HTTP

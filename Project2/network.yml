@@ -153,8 +153,7 @@ Resources:
             VpcId: !Ref VPC
             Tags:
                 - Key: Name
-                  Value: !Sub ${EnvironmentName}-PublicRouteTable    
-            
+                  Value: !Sub ${EnvironmentName}-PublicRouteTable                
     
     DefaultPublicRoute:
         Type: AWS::EC2::Route
@@ -253,7 +252,7 @@ Outputs:
 
     PrivateSubnets:
         Description: The list of the private subnets created for project2
-        Value: !Join [ ",", [ !Ref PrivateSubnetAZ1, !Ref -PrivateSubnetAZ2 ]]
+        Value: !Join [ ",", [ !Ref PrivateSubnetAZ1, !Ref PrivateSubnetAZ2 ]]
         Export:
           Name: !Sub ${EnvironmentName}-PRIV-NETS
 
