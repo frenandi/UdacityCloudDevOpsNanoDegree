@@ -173,3 +173,10 @@ Resources:
           Values: [/]
         ListenerArn: !Ref Listener
         Priority: 1
+
+Outputs:
+  DNSServer:
+    Description: The output for the DNSName of the loadbalr
+    Value: !Sub http://${WebAppLoadBalancer.DNSName}
+    Export:
+        Name: !Sub ${EnvironmentName}-LoadBalancerDNS
