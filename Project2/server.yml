@@ -24,8 +24,34 @@ Resources:
           ToPort: 80
           CidrIp: 0.0.0.0/0
       Tags:
-          - Key: name
-            Value: SecurityGroup Project2
+          - Key: Name
+            Value: Load Balancer SecurityGroup Project2
+      VpcId: 
+        Fn::ImportValue:
+            !Sub "${EnvironmentName}-VPCID"  
+  
+  WebServerSecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: Allows http to the hosts and SSH from local
+      GroupName: String
+      SecurityGroupEgress:
+          - IpProtocol: tcp
+            FromPort: 0
+            ToPort: 65535
+            CidrIp: 0.0.0.0/0
+        SecurityGroupIngress:
+          - IpProtocol: tcp
+            FromPort: 80
+            ToPort: 80
+            CidrIp: 0.0.0.0/0
+          - IpProtocol: tcp
+            FromPort: 22
+            ToPort: 22
+            CidrIp: 0.0.0.0/0
+      Tags:
+          - Key: Name
+            Value: Webservers SecurityGroup Project2
       VpcId: 
         Fn::ImportValue:
             !Sub "${EnvironmentName}-VPCID"
